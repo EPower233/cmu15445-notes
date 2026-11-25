@@ -744,12 +744,12 @@ CREATE TABLE customer (
 ![PPT 第 42 页](slides/page-73.png)
 
 
-```math
+$$
 \begin{aligned}
 \text{int32:}\quad & 10^7 \times 32\ \text{bits} = 3.2\times 10^{8}\ \text{bits} = 40\ \text{MB} \\
 \text{bitmaps:}\quad & 10^7 \times 43000\ \text{bits} = 4.3\times 10^{11}\ \text{bits} = 53.75\ \text{GB}
 \end{aligned}
-```
+$$
 
 位图方案的大小是原始数据的 43000 / 32 ≈ 1344 倍。而且每插入一个[元组](#元组)，DBMS 都要把 4.3 万个位图各延长一位。
 

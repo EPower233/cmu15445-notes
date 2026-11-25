@@ -115,13 +115,13 @@ ORDER BY ARTIST.ID;
 ![PPT 第 8 页](slides/page-013.png)
 
 
-```math
+$$
 Best(S)=\min_{t\in S,\ a}
 \left[
   Best(S\setminus\{t\})+Access(t)
   +JoinCost_a(S\setminus\{t\},t)
 \right].
-```
+$$
 
 `S` 是待[连接](#连接)的表集合，`t` 是最后接入的一张表，`a` 是候选连接算法；`JoinCost` 表示连接本身新增的代价，子计划代价已单独计入。只在允许的连接和可用算法中取最小值。[物理属性](#物理属性)加入以后，`Best` 还要以属性为状态的一部分。
 ![PPT 第 8 页](slides/page-014.png)
@@ -145,12 +145,12 @@ Best(S)=\min_{t\in S,\ a}
 
 优化器需要分别保留“无顺序要求时的最低代价计划”和“满足某个[有用顺序](#有用顺序)时的最低代价计划”，再比较：
 
-```math
+$$
 \min\bigl(
   C_{\text{already ordered}},
   C_{\text{unordered}}+C_{\text{sort}}
 \bigr).
-```
+$$
 
 这就是保留**[有用顺序](#有用顺序)（Interesting Order）**的理由：它是可能被后续[连接](#连接)、分组或最终输出利用的顺序。归并连接按其连接键产生的顺序，只有符合上层要求时才有用；按专辑 ID 排好，并不自动等于按艺术家 ID 排好。
 
@@ -452,16 +452,16 @@ M[2] <- max(M[2], 3)
 
 多个寄存器能够减小单次偶然事件的影响。标准 HLL 的原始估计以 `2^{M[j]}` 的调和平均为核心：[^hll]
 
-```math
+$$
 \widehat D_{\mathrm{raw}}
 =\alpha_m\frac{m^2}{\sum_{j=0}^{m-1}2^{-M[j]}}.
-```
+$$
 
 `m` 是寄存器数量，`M[j]` 是保存的最大位置，`α_m` 是偏差校正常数；实用实现还会针对小[基数](#基数)等情况修正。第 26 页最后给出寄存器值 `[6,8,5,4]` 和约 5.39，确实有：
 
-```math
+$$
 \frac{4}{1/6+1/8+1/5+1/4}\approx5.3933.
-```
+$$
 
 但这是直接对寄存器值求调和平均，不能当作 HLL 的不同值估计。寄存器保存的是位位置，代表的规模与 `2^{M[j]}` 有关。理解“用罕见位模式估计规模”已经足以掌握它在优化器里的用途，校正常数的推导超出了本讲范围。
 
@@ -515,9 +515,9 @@ PPT 抽出的 3 行在与估计有关的字段上是：
 
 对关系 `R`，记总行数为 `N_R`，属性 `A` 的不同值数量为 `V(A,R)`。先讨论 `A` 不含空值的情况。**[选择基数](#选择基数)（Selection Cardinality）**在这里指某个属性值平均对应多少行：
 
-```math
+$$
 SC(A,R)=\frac{N_R}{V(A,R)}.
-```
+$$
 
 只有在各个实际取值均匀出现的假设下，才可以把这个平均值用于估计一个具体等值条件的命中行数。它与已知某值精确出现几次不同。前面的年龄数据实际有 14 个不同值，因为 11 没有出现；`45 / 14` 只能说明每个实际出现的年龄平均有多少行，不能直接替代年龄 9 的实际频次 4。
 
@@ -525,11 +525,11 @@ SC(A,R)=\frac{N_R}{V(A,R)}.
 ![PPT 第 31 页](slides/page-075.png)
 
 
-```math
+$$
 sel_R(P)=\frac{|\sigma_P(R)|}{N_R},
 \qquad
 \widehat N_{\sigma_P(R)}=N_R\times\widehat{sel}_R(P).
-```
+$$
 
 帽号表示估计。[选择率](#选择率)在 0 与 1 之间，行数则有“行”这个单位。所谓“过滤能力强”，通常表示[选择率](#选择率)较小，留下的行较少，不能把它理解为数值更大。
 
@@ -555,18 +555,18 @@ WHERE age = 30
 ![PPT 第 31 页](slides/page-077.png)
 
 
-```math
+$$
 sel(age=9)=\frac{4}{45}\approx0.08889.
-```
+$$
 
 如果只保存[等深直方图](#等深直方图)（Equi-Depth Histogram），优化器看到的是 `[9,13]` 内共有 9 行。这一桶覆盖 5 个整数位置，在**[均匀分布假设](#均匀分布假设)（Uniformity Assumption）**下，平均每个位置对应 `9 / 5 = 1.8` 行，因此：
 
-```math
+$$
 \widehat{sel}(age=9)
 =\frac{9/5}{45}
 =\frac{1.8}{45}
 =0.04.
-```
+$$
 
 | 已知信息 | 估计命中行数 | [选择率](#选择率) |
 |---|---:|---:|
@@ -592,12 +592,12 @@ sel(age=9)=\frac{4}{45}\approx0.08889.
 ![PPT 第 33 页](slides/page-082.png)
 
 
-```math
+$$
 \widehat{sel}(age\ge7)
 =\frac{9+12+2\times(12/3)}{45}
 =\frac{29}{45}
 \approx0.64444.
-```
+$$
 
 如果回到精确频次，7 岁与 8 岁一共出现 `3 + 8 = 11` 次，实际应为 `(21 + 11) / 45 = 32 / 45 ≈ 0.71111`。完整桶的总数没有错，误差全部来自边界桶内的分摊。对于连续数值，常按区间长度作插值；对于本例整数年龄，则按包含的整数位置数分摊，必须处理好 `>` 与 `>=` 的边界差别。
 
@@ -607,13 +607,13 @@ sel(age=9)=\frac{4}{45}\approx0.08889.
 ![PPT 第 34 页](slides/page-084.png)
 
 
-```math
+$$
 \widehat{sel}(age\ne2)
 =1-\widehat{sel}(age=2)
 =1-\frac{12/5}{45}
 =1-\frac{2.4}{45}
 \approx0.94667.
-```
+$$
 
 PPT 把中间值取整后写成约 0.95；保留精度就得到约 0.94667。Notes 另举了一个不同的 5 行例子：年龄 0、1、2、3、4 各有 1 行，因而 `age != 2` 的[选择率](#选择率)精确为 `1 − 1/5 = 4/5`。两者的输入数据不同，答案自然不同。
 ![PPT 第 34 页](slides/page-085.png)
@@ -621,10 +621,10 @@ PPT 把中间值取整后写成约 0.95；保留精度就得到约 0.94667。Not
 
 SQL 的 `NULL` 会使普通比较得到 `UNKNOWN`，而 `WHERE` 只保留 `TRUE`。若存在空年龄，`age = 2` 和 `age != 2` 都不会保留这些行，公式应改成：
 
-```math
+$$
 sel(age\ne2)
 =1-null\_frac(age)-sel(age=2).
-```
+$$
 
 因此，概率里的“补集”要和 SQL 的三值逻辑对齐。维护空值比例也正是[统计摘要](#统计摘要)的一项实际用途。
 
@@ -636,9 +636,9 @@ sel(age\ne2)
 
 合取（Conjunction，`AND`）需要同时命中两个条件，其一般关系是：
 
-```math
+$$
 Pr(P_1\land P_2)=Pr(P_1)\,Pr(P_2\mid P_1).
-```
+$$
 
 如果知道年龄为 2，并不会改变名字以 A 开头的概率，就可以用 `Pr(P₂)` 代替条件概率。这就是**[谓词独立性假设](#谓词独立性假设)（Predicate Independence Assumption）**，它给出：
 ![PPT 第 36 页](slides/page-089.png)
@@ -646,29 +646,29 @@ Pr(P_1\land P_2)=Pr(P_1)\,Pr(P_2\mid P_1).
 ![PPT 第 37 页](slides/page-090.png)
 
 
-```math
+$$
 \widehat{sel}(P_1\land P_2)
 =\widehat{sel}(P_1)\widehat{sel}(P_2)
 \approx0.053\times0.1
 =0.0053.
-```
+$$
 
 析取（Disjunction，`OR`）保留至少命中一个条件的行。直接相加会把同时命中的行算两遍，所以要减去交集：
 
-```math
+$$
 sel(P_1\lor P_2)
 =sel(P_1)+sel(P_2)-sel(P_1\land P_2).
-```
+$$
 
 这一步的容斥关系本身不要求独立；将交集替换为两个[选择率](#选择率)的乘积，才用到独立性。按 PPT 的舍入值代入：
 ![PPT 第 38 页](slides/page-094.png)
 
 
-```math
+$$
 \widehat{sel}(P_1\lor P_2)
 \approx0.053+0.1-(0.053\times0.1)
 =0.1477.
-```
+$$
 
 如果一直保留 `sel(age=2) = 2.4/45`，对应的 `AND` 结果约为 0.005333，`OR` 结果为 0.148。小数差异来自中间舍入，并非另一套公式。
 
@@ -686,9 +686,9 @@ WHERE make = 'Honda' AND model = 'Accord'
 
 均匀分布与独立性一起给出：
 
-```math
+$$
 \widehat{sel}=\frac{1}{10}\times\frac{1}{100}=0.001.
-```
+$$
 
 但在这个例子中，`model = 'Accord'` 已经蕴含 `make = 'Honda'`。知道车型以后，再检查品牌不会继续排除行；条件概率 `Pr(make='Honda' | model='Accord')` 是 1。保留车型均匀的假定，正确[选择率](#选择率)应为 `1/100 = 0.01`，比估计大 10 倍。
 
@@ -716,9 +716,9 @@ WHERE make = 'Honda' AND model = 'Accord'
 
 设 `f_R(v)` 为值 `v` 在 `R.A` 中出现的次数，`f_S(v)` 同理。忽略空值时，等值[连接](#连接)的精确行数是：
 
-```math
+$$
 |R\bowtie S|=\sum_v f_R(v)f_S(v).
-```
+$$
 
 同一个值在 `R` 中出现 3 次，在 `S` 中出现 4 次，就会贡献 `3 × 4 = 12` 行；最后把所有值的贡献加起来。这个式子既覆盖一对一，也覆盖一对多和多对多，只是精确保存两边的全部频次并逐值计算，往往不符合轻量规划的要求。
 
@@ -726,11 +726,11 @@ WHERE make = 'Honda' AND model = 'Accord'
 
 **[包含原则](#包含原则)（Containment Principle）**用较小的[连接](#连接)键取值集合包含于较大的取值集合这一假设，把共享不同值数量近似为 `min(d_R,d_S)`。于是：
 
-```math
+$$
 \widehat N_{R\bowtie S}
 =\min(d_R,d_S)\times\frac{N_R}{d_R}\times\frac{N_S}{d_S}
 =\frac{N_RN_S}{\max(d_R,d_S)}.
-```
+$$
 
 这就是常见的等值[连接](#连接)估计公式。分母是不同值数量（Distinct Value Count），并非[选择率](#选择率)。对应的连接[选择率](#选择率)，是在所有可能的行对中匹配的比例，即约为 `1/max(d_R,d_S)`。
 ![PPT 第 42 页](slides/page-098.png)
@@ -800,21 +800,21 @@ flowchart BT
 ![PPT 第 43 页](slides/page-100.png)
 
 
-```math
+$$
 \widehat N_{B'}=N_B\times\widehat{sel}_B(B.id>100),
-```
+$$
 
-```math
+$$
 \widehat N_J
 =\frac{N_A\widehat N_{B'}}
 {\max\bigl(V(id,A),\widehat V(id,B')\bigr)},
-```
+$$
 
-```math
+$$
 \widehat N_{J\bowtie C}
 =\frac{\widehat N_JN_C}
 {\max\bigl(\widehat V(A.id,J),V(id,C)\bigr)}.
-```
+$$
 
 | 层次 | 需要什么信息 | 产生什么估计 |
 |---|---|---|

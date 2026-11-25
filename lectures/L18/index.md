@@ -227,9 +227,9 @@ T1 一旦允许 T2 看到新的 A，就已经占住了 B 的写入权。T2 无�
 
 于是，时间顺序必然满足：
 
-```math
+$$
 LP(T_i) < U_i(Q) < L_j(Q) \leq LP(T_j)
-```
+$$
 
 其中，`LP(T)` 是[锁点](#锁点)，`U_i(Q)` 是 Ti 释放 Q 的[锁](#锁)，`L_j(Q)` 是 Tj 取得 Q 的锁。Ti 必须先完成全部加锁才开始解锁；Tj 对 Q 的加锁则不晚于自己的最后一次加锁。
 
@@ -324,14 +324,14 @@ PPT 第 23 页把 `UNLOCK` 画在 `COMMIT` 上方，是示意上的次序问题�
 
 把完整[事务](#事务)的执行投影到读写与[提交](#提交)次序上，PPT 中的调度集合关系可以写成：
 
-```math
+$$
 \begin{aligned}
 \text{Serial} &\subsetneq \text{Strong Strict 2PL} \\
               &\subsetneq \text{Conflict Serializable} \\
               &\subsetneq \text{View Serializable} \\
               &\subsetneq \text{All Schedules}
 \end{aligned}
-```
+$$
 
 从右往左，允许的交错越来越少，约束越来越强。普通[两阶段锁](#两阶段锁)（Two-Phase Locking，2PL）所生成的调度也位于[冲突可串行化](#冲突可串行化)集合之内，而 Strong Strict 2PL 又是它的更受限版本。
 

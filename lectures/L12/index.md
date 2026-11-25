@@ -184,31 +184,31 @@ for r in R:
 ![PPT 第 16 页](slides/page-21.png)
 
 
-```math
+$$
 \operatorname{Cost}_{\mathrm{naive}} = M + mN
-```
+$$
 
 这里的 mN 是“[外表](#外表)[元组](#元组)数 × [内表](#内表)[页](#页)数”，不是两表页数的乘积，也不是比较次数 mn。代入原例：
 ![PPT 第 17 页](slides/page-22.png)
 
 
-```math
+$$
 \begin{aligned}
 1000 + 100000 \times 500 &= 50{,}001{,}000\ \text{I/Os},\\
 50{,}001{,}000 \times 0.1\ \text{ms}
 &= 5000.1\ \text{s} \approx 1.39\ \text{h}.
 \end{aligned}
-```
+$$
 
 把 S 放到外层，计算变成：
 
-```math
+$$
 \begin{aligned}
 500 + 40000 \times 1000 &= 40{,}000{,}500\ \text{I/Os},\\
 40{,}000{,}500 \times 0.1\ \text{ms}
 &= 4000.05\ \text{s} \approx 1.11\ \text{h}.
 \end{aligned}
-```
+$$
 
 交换方向省下约 1000 秒，但仍然很慢。PPT 把第一项写成约 1.3 小时，按给定数字精算应为约 1.39 小时，保留一位小数为 1.4 小时，与 Notes 一致。
 
@@ -236,9 +236,9 @@ for page_r in pages(R):
 ![PPT 第 19 页](slides/page-24.png)
 
 
-```math
+$$
 \operatorname{Cost}_{\mathrm{block,\ 1\ page}} = M + MN
-```
+$$
 
 代入数字，R 作[外表](#外表)需要 `1000 + 1000 × 500 = 501000` 次 I/O，折合 50.1 秒；S 作[外表](#外表)需要 `500 + 500 × 1000 = 500500` 次 I/O，折合 50.05 秒。两种方向的乘积项相同，[页](#页)数较少的表放外侧，可以减少一次完整[外表](#外表)扫描的成本。
 
@@ -266,11 +266,11 @@ Available buffer frames: B
 ![PPT 第 21 页](slides/page-27.png)
 
 
-```math
+$$
 \operatorname{Cost}_{\mathrm{BNL}}
 = M + \left\lceil\frac{M}{B-2}\right\rceil N,
 \qquad B \ge 3.
-```
+$$
 
 向上取整不能省：最后一批即使只有 1 页，也要完整扫描一遍[内表](#内表)。以 PPT 的 B = 102 为例，100 个[帧](#帧)留给[外表](#外表)：
 
@@ -285,12 +285,12 @@ Available buffer frames: B
 
 如果整个[外表](#外表)能放进 B − 2 [帧](#帧)，批次数就降到 1：
 
-```math
+$$
 M \le B-2
 \quad\Longrightarrow\quad
 \operatorname{Cost}_{\mathrm{BNL}}=M+N
 =1500\ \text{I/Os}=0.15\ \text{s}.
-```
+$$
 
 达到这个 I/O 代价，只要求[外表](#外表)整体驻留，[内表](#内表)可以继续逐[页](#页)流入。两表不必同时完整装入内存。PPT 写的是 `M < B − 2`，恰好相等时同样装得下，故这里写成 `≤`。
 
@@ -318,9 +318,9 @@ for r in R:
 ![PPT 第 24 页](slides/page-31.png)
 
 
-```math
+$$
 \operatorname{Cost}_{\mathrm{INL}}=M+mC.
-```
+$$
 
 C 包括定位[索引](#索引)项，以及为了取得所需数据而付出的访问成本。[B+ 树](#B+%20树)（B+ Tree，见第 [8](../L08/index.md)、[9](../L09/index.md) 讲）通常需要沿树向下查找；遇到重复键，还可能沿[叶节点](#叶节点)继续扫描；如果索引不覆盖查询需要的列，还要访问相应的数据[页](#页)。树高、缓存命中率、重复值数量和数据页分布都会改变 C，所以不能给所有索引填同一个常数。
 
@@ -453,7 +453,7 @@ S 的所有 value 都大于 100，所以前置过滤没有删掉任何行。先�
 ![PPT 第 29 页](slides/page-53.png)
 
 
-```math
+$$
 \begin{aligned}
 \operatorname{Sort}(P)
 &=2P\left(1+\left\lceil
@@ -462,7 +462,7 @@ S 的所有 value 都大于 100，所以前置过滤没有删掉任何行。先�
 \operatorname{Cost}_{\mathrm{SMJ}}
 &=\operatorname{Sort}(M)+\operatorname{Sort}(N)+M+N.
 \end{aligned}
-```
+$$
 
 第一项中的 1 表示初始有序段生成阶段，对数部分计算后续归并[趟](#趟)数。[连接](#连接)阶段再把两个排好序的输入读回来，所以还有最后的 M + N。这里假设 P 为正且 B ≥ 3；已有顺序或把最后一趟排序直接接给连接的实现，可以省去部分读写，应按具体执行方式另算。
 
@@ -470,7 +470,7 @@ S 的所有 value 都大于 100，所以前置过滤没有删掉任何行。先�
 ![PPT 第 30 页](slides/page-54.png)
 
 
-```math
+$$
 \begin{aligned}
 \operatorname{Sort}(R)
 &=2\times1000\times
@@ -484,7 +484,7 @@ S 的所有 value 都大于 100，所以前置过滤没有删掉任何行。先�
 \operatorname{Cost}_{\mathrm{SMJ}}&=4000+2000+1500=7500\ \text{I/Os},\\
 \operatorname{Time}&=7500\times0.1\ \text{ms}=0.75\ \text{s}.
 \end{aligned}
-```
+$$
 
 “归并只需 M + N”依赖上述读取条件，不能当作无条件保证。如果两表所有[连接](#连接)键都相同，整个输入就是一个巨大匹配组，结果有 mn 行。匹配组装不下内存时，系统可能反复读取[内表](#内表)。PPT 和 Notes 用约 MN 的归并 I/O 来表达这种按页重复匹配的退化，于是总成本写成“排序成本 + MN”。具体重复读取次数还与组缓存、批处理方式和内存大小有关，这个简式不是所有实现的精确最坏上界。
 ![PPT 第 31 页](slides/page-55.png)
@@ -513,11 +513,11 @@ S 的所有 value 都大于 100，所以前置过滤没有删掉任何行。先�
 ![PPT 第 33 页](slides/page-57.png)
 
 
-```math
+$$
 r.\mathrm{key}=s.\mathrm{key}
 \quad\Longrightarrow\quad
 h(r.\mathrm{key})=h(s.\mathrm{key}).
-```
+$$
 
 反方向不成立，不同键可能发生哈希[冲突](#冲突)。这个性质足以把搜索范围缩到一个哈希[桶](#桶)或一段探测序列，再在其中核实完整的键值。
 
@@ -556,9 +556,9 @@ for s in S:
 
 内存驻留的[哈希连接](#哈希连接)只需各扫描一次输入：
 
-```math
+$$
 \operatorname{Cost}_{\mathrm{basic\ hash}}=M+N.
-```
+$$
 
 在原例中仍是 1500 次 I/O，即模型中的 0.15 秒。它与[外表](#外表)完全驻留的块嵌套循环有相同的读[页](#页)代价，但通常省去了大量无效[元组](#元组)比较；代价表忽略 CPU，因此无法把这项差别直接显示出来。
 
@@ -668,12 +668,12 @@ Notes 将第一阶段称作 Build；为避免和[分区](#分区)内部“构建
 
 另一方面，[分区](#分区)又必须足够小，才能在[连接](#连接)阶段为构建分区建立驻留[哈希表](#哈希表)。如果暂时忽略哈希表额外空间，并假设键分布均匀，平均每个 R 分区约 M/k [页](#页)，于是得到一个粗略容量判断：
 
-```math
+$$
 k\le B-1,\qquad
 \frac{M}{k}\lesssim B-2
 \quad\Longrightarrow\quad
 M\lesssim(B-1)(B-2).
-```
+$$
 
 这只是均匀分布、忽略开销时的一层[分区](#分区)容量估计。真正决定是否装得下的是最大的构建分区及其[哈希表](#哈希表)，而不是平均分区。系统还要为装载因子、记录表示和其他管理结构预留空间。
 
@@ -739,14 +739,14 @@ Final pairs: (R0,S0), (R1',S1'), (R1'',S1''), (R1''',S1'''), ...
 | 逐对读回分区并[连接](#连接) | M + N | 构建局部[哈希表](#哈希表)，再扫描对应探测分区 |
 | 合计 | 3(M + N) | 不包含最终结果写出 |
 
-```math
+$$
 \begin{aligned}
 \operatorname{Cost}_{\mathrm{GRACE}}
 &=2(M+N)+(M+N)=3(M+N),\\
 &=3(1000+500)=4500\ \text{I/Os},\\
 \operatorname{Time}&=4500\times0.1\ \text{ms}=0.45\ \text{s}.
 \end{aligned}
-```
+$$
 
 因此，`3(M + N)` 是这个[分区](#分区)方案的代价，不是所有[哈希连接](#哈希连接)都必须支付的代价。基本[哈希连接](#哈希连接)没有分区文件，只有 M + N。
 
@@ -775,10 +775,10 @@ R₀ 不必先写再读，S₀ 也不必先写再读。设这两部分原本分�
 ![PPT 第 45 页](slides/page-92.png)
 
 
-```math
+$$
 \operatorname{Cost}_{\mathrm{hybrid}}
 \approx 3(M+N)-2(M_0+N_0).
-```
+$$
 
 两部分的原始读取仍然要做，所以减掉的是一次写出和一次读回，不能把它们的全部成本都扣除。极端情况下，整个[构建侧](#构建侧)的[哈希表](#哈希表)都能驻留，算法就接近基本[哈希连接](#哈希连接)；内存很紧时，则接近普通 GRACE。
 
